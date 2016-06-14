@@ -1,0 +1,147 @@
+<?php Yaf\loader::import(__HEADER__); ?>
+
+<div class="row">
+    <div class="col-xs-12">
+        <!-- PAGE CONTENT BEGINS -->
+        <div class="row">
+            <div class="col-xs-12">
+                <div>
+                    <button class="btn btn-xs  btn-success" id="addForm" dialog-title="目录添加" data-dialog="myDialog" data-action="<?php echo base_url('Item/addMenu'); ?>">
+                        <i class="ace-icon fa  fa-plus bigger-110"></i>
+                        <span class="bigger-110 no-text-shadow">添加</span>
+                    </button>
+                    <button class="btn btn-xs  btn-warning" id="editForm" data-pk="id" dialog-title="目录编辑" data-dialog="myDialog" data-info-url="<?php echo base_url('Item/getMenuById'); ?>" data-action="<?php echo base_url('Item/editMenu'); ?>">
+                        <i class="ace-icon fa fa-pencil bigger-110"></i>
+                        <span class="bigger-110 no-text-shadow">编辑</span>
+                    </button>
+                    <button class="btn btn-xs btn-danger" id="delForm" data-pk="id" data-action="<?php echo base_url('Item/delMenu'); ?>">
+                        <i class="ace-icon glyphicon glyphicon-trash bigger-110"></i>
+                        <span class="bigger-110 no-text-shadow">删除</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="hr hr-10 dotted"></div>
+        <div class="row">
+            <div class="col-xs-12">
+                <table id="table"
+                       class="table table-striped table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th data-checkbox="true" data-class="center"></th>
+                        <th data-field="name">名称</th>
+                        <th data-field="order">排序</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div><!-- /.span-->
+        </div><!-- /.row -->
+
+        <script type="text/html" id="myDialog">
+            <div class="row">
+                <div class="col-xs-12">
+                    <form id="myForm" action="<%=data.action%>" method="post">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="parent_id"> 上级目录</label>
+
+                                <div class="col-sm-6">
+                                    <select class="col-xs-12" name="parent_id">
+                                        <%if(data.info.menus){
+                                        var menus=data.info.menus;
+                                        for(i=0;i<menus.length;i++){ %>
+                                            <option value="<%=menus[i]['id']%>" <%if (data.info.parent_id==menus[i].id){%>selected<%}%>><%=menus[i]['name']%></option>
+                                            <%}}%>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="order"> 排序</label>
+
+                                <div class="col-sm-6">
+                                    <input id="order" class="col-xs-12" name="order" value="<%=data.info.order%>"></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right" for="name"> 目录名称</label>
+
+                                <div class="col-sm-6">
+                                    <input id="name" class="col-xs-12" name="name" value="<%=data.info.name%>"></div>
+                            </div>
+                            <div class="form-group">
+                                <input type="hidden" value="<%=data.info.item_id%>" name="item_id">
+                                <input type="hidden" value="<%=data.info.id%>" name="id">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </script>
+    </div><!-- /.col -->
+</div><!-- /.row -->
+
+<?php Yaf\loader::import(__FOOTER__); ?>
+<script>
+    $.hight_nav('<?php echo base_url('Item/show',['item_id'=>$item_id])?>');
+    $(function (e) {
+        yboard.init();
+        $('#table').bootstrapTable({
+            clickToSelect: true,
+            pageSize:<?php echo $limit; ?>,
+            url: '<?php echo base_url('/Item/getItenMenu',['item_id'=>$item_id]);?>',
+            sidePagination: 'server',
+            pagination: true,
+            pageList: '[<?php echo $limit; ?>]',
+            queryParams: function (params) {
+                return params;
+            }
+        });
+    });
+
+    function getFormData(obj, callBack) {
+        var dataAction = obj.attr('data-action'), item_id =<?php echo $item_id?>, dataInfoUrl = obj.attr('data-info-url'), formData = {
+            action: dataAction,
+            info: {
+                item_id: <?php echo $item_id?>,
+                name: '',
+                order: 99,
+                id: 0,
+                parent_id: 0,
+                menus: []
+            }
+        };
+
+        $.get('<?php echo base_url('/Item/getItenMenu');?>', {item_id: item_id}, function (e) {
+            formData.info.menus.push({id: 0, name: '目录管理'});
+            $(e.rows).each(function (i, v) {
+                formData.info.menus.push({id: v.id, name: v.name});
+            });
+            if (typeof (dataInfoUrl) != 'undefined' && dataInfoUrl != '') {
+                //这里是编辑按钮
+                var id = $($(yboard.config.tableId)).getListIds('id', true);
+                if (!id) {
+                    return false;
+                }
+                $.get(dataInfoUrl, {id: id}, function (data) {
+                    if (data.code == 200) {
+                        formData.info.order = data.data.order;
+                        formData.info.name = data.data.name;
+                        formData.info.parent_id = data.data.parent_id;
+                        formData.info.id = data.data.id;
+                        callBack(formData);
+                    }
+                }, 'json');
+            } else {
+                callBack(formData);
+            }
+        }, 'json');
+
+    }
+
+    function dialogShow() {
+
+        return false;
+    }
+</script>
+</body>
+</html>

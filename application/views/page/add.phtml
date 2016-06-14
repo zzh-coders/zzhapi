@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8"/>
+    <title>页面添加</title>
+    <!-- bootstrap & fontawesome -->
+    <link rel="stylesheet" href="<?php echo __ASSETS__; ?>/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="<?php echo __ASSETS__; ?>/font-awesome/4.5.0/css/font-awesome.min.css"/>
+
+    <!-- page specific plugin styles -->
+    <?php echo isset($block['style']) ? $block['style'] : ''; ?>
+    <!-- text fonts -->
+    <!-- ace styles -->
+    <link rel="stylesheet" href="<?php echo __ASSETS__; ?>/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style"/>
+
+    <!--[if lte IE 9]>
+    <link rel="stylesheet" href="<?php echo __ASSETS__;?>/css/ace-part2.min.css" class="ace-main-stylesheet"/>
+    <![endif]-->
+
+    <!--[if lte IE 9]>
+    <link rel="stylesheet" href="<?php echo __ASSETS__;?>/css/ace-ie.min.css"/>
+    <![endif]-->
+
+    <!-- inline styles related to this page -->
+    <link rel="stylesheet" href="<?php echo __CSS__; ?>/editor.css"/>
+    <link rel="stylesheet" href="<?php echo __CSS__; ?>common.css"/>
+    <link rel="stylesheet" href="<?php echo __JS__; ?>/plugin/editor.md/css/editormd.css"/>
+    <script type="text/javascript">
+        var lang = new Array();
+
+        //attorn
+        lang['attorn_success'] = "转让成功！";
+
+        //catalog
+        lang["none"] = "无";
+        lang["save_success"] = "保存成功！";
+        lang["save_fail"] = "保存失败！";
+        lang["confirm_to_delete"] = "确认删除吗？";
+        lang["delete_success"] = "删除成功！";
+        lang["delete_fail"] = "删除失败！";
+
+        //item
+        lang["back_to_top"] = "回到顶部";
+
+
+        //page/edite
+        lang["params"] = "参数名";
+        lang["type"] = "类型";
+        lang["description"] = "说明";
+        lang["editormd_placeholder"] = "本编辑器支持Markdown编辑，左边编写，右边预览";
+        lang["json_fail"] = "json导入失败";
+        lang["filed"] = "键";
+
+    </script>
+</head>
+<body>
+<div id="layout">
+    <!-- 顶部条 -->
+    <header class="row">
+        <div class="head-left  pull-left">
+            标题：<input type="text" name="page_title" id="page_title" placeholder="请输入页面标题" value="<?php echo isset($page_info['page_title']) ? $page_info['page_title'] : ''; ?>" tabindex="1">
+            目录：<select name="cat_id" id="cat_id" tabindex="2"></select>
+            排序：<input type="text" name="s_number" id="s_number" value="<?php echo isset($page_info['order']) ? $page_info['order'] : 99; ?>" placeholder="可选：顺序数字" title="可选：顺序数字" tabindex="3">
+        </div>
+        <div class="head-right pull-right">
+            <a href="javascript:;" class="btn btn-primary " id="save">保存</a>
+            <a href="<?php echo base_url('Item/show',['item_id'=>$item_id]); ?>" class="btn cancel">取消</a>
+        </div>
+    </header>
+    <!-- 插入模板的按钮组 -->
+    <div class="btns">
+        <button id="api-doc" tabindex="4">插入API接口模板</button>
+        <button id="database-doc" tabindex="5">插入数据字典模板</button>
+        <button id="jsons" tabindex="7">JSON转参数表格</button>
+    </div>
+    <div id="editormd">
+        <textarea id="page_content" style="display:none;" tabindex="6"><?php echo isset($page_info['page_content']) ? $page_info['page_content'] : ''; ?></textarea>
+    </div>
+    <input type="hidden" id="item_id" value="<?php echo $item_id; ?>">
+    <input type="hidden" id="page_id" value="<?php echo isset($page_info['page_id']) ? $page_info['page_id'] : 0; ?>">
+    <input type="hidden" id="default_second_cat_id" value="<?php echo isset($page_info['cat_id']) ? $page_info['cat_id'] : 0; ?>">
+</div>
+<!-- 模板存放的地方 -->
+<div id="api-doc-templ" style="display:none">
+**简要描述：**
+
+- 用户注册接口
+- 开发者：大神
+
+**请求URL：**
+- ` http://xx.com/api/user/register `
+
+**请求方式：**
+- POST
+
+**参数：**
+
+|参数名|必选|类型|说明|
+|:---- |:---|:----- |----- |
+|username |是 |string |用户名 |
+|password |是 |string | 密码 |
+|name |否 |string | 昵称 |
+
+**返回示例**
+
+```
+{
+"error_code": 0,
+"data": {
+"uid": "1",
+"username": "12154545",
+"name": "吴系挂",
+"groupid": 2 ,
+"reg_time": "1436864169",
+"last_login_time": "0",
+}
+}
+```
+
+**返回参数说明**
+
+|参数名|类型|说明|
+|:----- |:-----|----- |
+|groupid |int |用户组id，1：超级管理员；2：普通用户 |
+
+**备注**
+
+- 更多返回错误代码请看首页的错误代码描述
+
+
+</div>
+<div id="database-doc-templ" style="display:none">
+
+- 用户表，储存用户信息
+
+|字段|类型|空|默认|注释|
+|:---- |:------- |:--- |-- -|------ |
+|uid |int(10) |否 | | |
+|username |varchar(20) |否 | | 用户名 |
+|password |varchar(50) |否 | | 密码 |
+|name |varchar(15) |是 | | 昵称 |
+|reg_time |int(11) |否 | 0 | 注册时间 |
+
+- 备注：无
+
+
+</div>
+
+<div id="json-templ" class="editormd-dialog editormd-preformatted-text-dialog" style="width: 780px; height: 540px;">
+
+    <div style="cursor: move;" class="editormd-dialog-header">
+        <strong class="editormd-dialog-title">JSON转参数表格</strong>
+    </div>
+    <a class="fa fa-close editormd-dialog-close" href="javascript:closeDiv('#json-templ');"></a>
+    <div class="editormd-dialog-container">
+        <textarea id="jsons_add" class="jsons" placeholder="请粘贴一段json，程序将自动将json解析并生成参数表格。此功能适合用于快速编写API文档的返回参数表格"></textarea>
+
+        <div class="editormd-dialog-footer">
+            <button class="editormd-btn editormd-enter-btn">确定</button>
+            <button class="editormd-btn editormd-cancel-btn" onclick="closeDiv('#json-templ')">取消</button>
+        </div>
+    </div>
+    <div class="editormd-dialog-mask editormd-dialog-mask-bg"></div>
+    <div class="editormd-dialog-mask editormd-dialog-mask-con"></div>
+</div>
+
+<script src="<?php echo __ASSETS__; ?>/js/jquery.1.11.1.min.js"></script>
+<script src="<?php echo __ASSETS__; ?>/js/bootstrap.min.js"></script>
+<script src="<?php echo __ASSETS__; ?>/js/ace-elements.min.js"></script>
+<script src="<?php echo __ASSETS__; ?>/js/ace.min.js"></script>
+<script src="<?php echo __JS__; ?>common.js"></script>
+<script src="<?php echo __JS__; ?>plugin/editor.md/editormd.js"></script>
+<script>
+    var _editormd;
+
+    var json_table_data = '|' + lang["params"] + '|' + lang["type"] + '|' + lang["description"] + '|\n' +
+        '|:-------|:-------|:-------|\n';
+
+    $(function () {
+        /*加载目录*/
+        secondCatList();
+
+        function secondCatList() {
+            var default_second_cat_id = $("#default_second_cat_id").val();
+            var item_id = $("#item_id").val();
+
+            $.get('<?php echo base_url('/Item/getItenMenu');?>', {item_id: item_id}, function (e) {
+                if (e.rows) {
+                    $("#cat_id").empty();
+                    $(e.rows).each(function (i, v) {
+                        $("#cat_id").append('<OPTION value="' + v.id + '" ' + ((default_second_cat_id == v.id) ? 'selected' : '') + '>' + v.name + '</OPTION>');
+                    });
+                }
+            }, 'json');
+        }
+
+        // 如果是新增页面，则光标为标题文本框
+        if (location.href.indexOf('type=new') !== -1) {
+            setTimeout(function () {
+                $('#page_title').focus();
+            }, 1000);
+        }
+
+        /*初始化编辑器*/
+        _editormd = editormd("editormd", {
+            width: "90%",
+            height: 740,
+            path : '<?php echo __JS__;?>plugin/editor.md/lib/',
+            placeholder: lang["editormd_placeholder"],
+            codeFold : true,
+            //syncScrolling : false,
+            saveHTMLToTextarea : true,    // 保存 HTML 到 Textarea
+            searchReplace : true,
+            //watch : false,                // 关闭实时预览
+            htmlDecode : "style,script,iframe|on*",            // 开启 HTML 标签解析，为了安全性，默认不开启
+            //toolbar  : false,             //关闭工具栏
+            //previewCodeHighlight : false, // 关闭预览 HTML 的代码块高亮，默认开启
+            emoji : true,
+            taskList : true,
+            tocm            : true,         // Using [TOCM]
+            tex : true,                   // 开启科学公式TeX语言支持，默认关闭
+            flowChart : true,             // 开启流程图支持，默认关闭
+            sequenceDiagram : true,       // 开启时序/序列图支持，默认关闭,
+            //dialogLockScreen : false,   // 设置弹出层对话框不锁屏，全局通用，默认为true
+            //dialogShowMask : false,     // 设置弹出层对话框显示透明遮罩层，全局通用，默认为true
+            //dialogDraggable : false,    // 设置弹出层对话框不可拖动，全局通用，默认为true
+            //dialogMaskOpacity : 0.4,    // 设置透明遮罩层的透明度，全局通用，默认值为0.1
+            //dialogMaskBgColor : "#000", // 设置透明遮罩层的背景颜色，全局通用，默认为#fff
+            imageUpload : true,
+            imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+            imageUploadURL : "<?php echo base_url('File/upload');?>",
+            onload : function() {
+
+            }
+        });
+
+        /*插入API接口模板*/
+        $("#api-doc").click(function () {
+            var tmpl = $("#api-doc-templ").html();
+            _editormd.insertValue(tmpl);
+        });
+        /*插入数据字典模板*/
+        $("#database-doc").click(function () {
+            var tmpl = $("#database-doc-templ").html();
+            _editormd.insertValue(tmpl);
+        });
+
+        /*插入JSON*/
+        $("#jsons").click(function () {
+
+            $("#json-templ").show();
+
+        });
+
+
+        $("#json-templ .editormd-enter-btn").click(function () {
+
+
+            var datas = $("#json-templ .jsons").val();
+
+            try {
+                Change($.parseJSON(datas));
+            }
+            catch (e) {
+                alert(lang["json_fail"] + e);
+            }
+            _editormd.insertValue(json_table_data);
+
+            json_table_data = '|' + lang["filed"] + '|' + lang["type"] + '|' + lang["description"] + '|\n' +
+                '|:-------|:-------|:-------|\n';
+
+
+            $("#json-templ .jsons").val("");
+            $("#json-templ").hide();
+
+        });
+
+
+
+        /*保存*/
+        var saving = false;
+        $("#save").on(ace.click_event, function () {
+            if (saving) return false;
+            var page_id = $("#page_id").val();
+            var item_id = $("#item_id").val();
+            var page_title = $("#page_title").val();
+            var page_content = $("#page_content").val();
+            var item_id = $("#item_id").val();
+            var s_number = $("#s_number").val();
+            var cat_id = $("#cat_id").val();
+
+            saving = true;
+            $.post("<?php echo $action;?>", {
+                    "page_id": page_id,
+                    "cat_id": cat_id,
+                    "s_number": s_number,
+                    "page_content": page_content,
+                    "page_title": page_title,
+                    "item_id": item_id
+                }, function (data) {
+                    if (data.code == 200) {
+                        $.popMessage('ok', data.message);
+                        if (data.url) {
+                            setTimeout(function () {
+                                window.location.href = data.url;
+                            }, 500);
+                            return true;
+                        }
+
+                    } else {
+                        $.popMessage('error', data.message);
+                    }
+                    saving = false;
+                },
+                'json'
+            )
+        });
+
+
+        $(".editormd-preview-container").bind('DOMNodeInserted', function (e) {
+            $(".editormd-preview-container table thead tr").css({"background-color": "#08c", "color": "#fff"});
+            $(".editormd-preview-container table tr").eq(0).css({"background-color": "#08c", "color": "#fff"});
+            $(".editormd-preview-container table tr").each(function () {
+                if ($(this).find("td").eq(1).html() == "object") {
+                    $(this).css({"background-color": "#99CC99", "color": "#000"});
+                }
+
+            });
+        });
+
+    });
+
+
+    function closeDiv(target) {
+        $(target).hide();
+    }
+
+    function Change(data) {
+        var level_str = "- ";
+        if (arguments.length > 1) {
+            var level;
+            arguments[1] > 0 ? level = arguments[1] : level = 1;
+            for (var i = 0; i < level; i++) {
+                level_str += "- ";
+            }
+        }
+
+        for (var key in data) {
+            var value = data[key];
+            var type = typeof(value);
+            if (type == "object") {
+                json_table_data += '| ' + level_str + key + ' |' + type + '  | 无 |\n';
+                if (value instanceof Array) {
+                    var j = level + 1;
+                    Change(value[0], j);
+                    continue;
+                }
+                //else
+                //{
+                Change(value, level);
+                //}
+
+            }
+            else {
+                json_table_data += '| ' + key + ' | ' + type + '| 无 |\n';
+            }
+        }
+    }
+</script>
+</body>
+</html>

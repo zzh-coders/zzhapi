@@ -1,0 +1,76 @@
+<?php Yaf\loader::import(__HEADER__); ?>
+
+<div class="row">
+    <div class="col-xs-12">
+        <!-- PAGE CONTENT BEGINS -->
+        <?php if (isset($userinfo['uid']) && $userinfo['uid'] == $page_info['author_uid']) { ?>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="pull-left">
+                        <a class="btn btn-xs  btn-success" href="<?php echo base_url('Page/copy',['page_id'=>$page_info['page_id']]); ?>">
+                            <i class="ace-icon fa  fa-plus bigger-110"></i>
+                            <span class="bigger-110 no-text-shadow">复制</span>
+                        </a>
+                        <a class="btn btn-xs  btn-warning" href="<?php echo base_url('Page/edit',['page_id'=>$page_info['page_id']]); ?>">
+                            <i class="ace-icon fa fa-pencil bigger-110"></i>
+                            <span class="bigger-110 no-text-shadow">编辑</span>
+                        </a>
+                        <a class="btn btn-xs btn-danger" id="del" data-action="<?php echo base_url('Page/del',['page_id'=>$page_info['page_id']]); ?>">
+                            <i class="ace-icon glyphicon glyphicon-trash bigger-110"></i>
+                            <span class="bigger-110 no-text-shadow">删除</span>
+                        </a>
+                    </div>
+                    <div class="pull-right" style="vertical-align: middle">
+                        <label>页面分享地址:</label>
+                        <a href="<?php echo base_url('shares/' . $page_info['page_id'] . '/' . $page_info['item_id']); ?>">
+                            <?php echo base_url('shares/' . $page_info['page_id'] . '/' . $page_info['item_id']); ?>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="hr hr-10 dotted"></div>
+        <?php } ?>
+        <div class="row">
+            <div class="col-xs-12"><?php echo $page_info['page_content']; ?></div>
+        </div>
+    </div><!-- /.col -->
+</div><!-- /.row -->
+
+<?php Yaf\loader::import(__FOOTER__); ?>
+<script>
+    $.hight_nav('<?php echo base_url('pages/'.$page_info['page_id'].'/'.$page_info['item_id'])?>');
+    $(function (e) {
+        yboard.init();
+
+        //为所有table标签添加bootstap支持的表格类
+        $("table").addClass("table table-bordered table-hover");
+
+        $("table thead tr").css({"background-color": "#08c", "color": "#fff", "background-image": "none"});
+        $("table tr").each(function () {
+            if ($(this).find("td").eq(1).html() == "object") {
+                $(this).css({"background-color": "#99CC99", "color": "#000"});
+            }
+        });
+
+        $('#del').on(ace.click_event, function (e) {
+            var _action = $(this).attr('data-action');
+            $.showConfirm('是否要进行数据删除操作?', function () {
+                $.post(_action, {}, function (data) {
+                    if (data.code == 200) {
+                        $.popMessage('ok', data.message);
+
+                        setTimeout(function () {
+                            window.location.href = "<?php echo base_url('items/'.$page_info['item_id']);?>";
+                        }, 500);
+                        return true;
+
+                    }
+                }, 'json');
+            });
+        })
+    });
+
+
+</script>
+</body>
+</html>
