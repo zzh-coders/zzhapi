@@ -437,7 +437,7 @@ function debug($arr) {
 function memory() {
     $cache = Yaf\Registry::get('Redis');
     if (!$cache) {
-        Yaf\Loader::import(LIB_PATH . ' / Redis .class.php');
+        Yaf\Loader::import(' / Redis .class.php');
         $cache = new \Yboard\Redis();
         Yaf\Registry::set('Redis', $cache);
     }
@@ -675,4 +675,12 @@ function getMenuTree($menus) {
 
 function getFileUrl($file_path) {
     return $file_path ? base_url() . getConfig('upload_url') . $file_path : '';
+}
+
+function writeLog($message, $level) {
+    \Yaf\Loader::import('Log.class.php');
+    \Yboard\Log::init();
+    \Yboard\Log::record($message, $level);
+    \Yboard\Log::save();
+
 }

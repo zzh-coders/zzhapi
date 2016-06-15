@@ -71,4 +71,12 @@ class MemberService extends CommonService {
         return $this->returnInfo(1, '登录成功');
     }
 
+    public function getInfoById($userId) {
+        if (!$userId) {
+            return [];
+        }
+        $member_model = $this->loadModel('Member');
+
+        return $member_model->getById($userId);
+    }
 }
