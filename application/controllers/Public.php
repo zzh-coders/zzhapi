@@ -43,7 +43,7 @@ class PublicController extends CommonController {
 
     public function verifyAction() {
         ob_clean();
-        Yaf\Loader::import('/Verify.class.php');
+        Yaf\Loader::import('Verify.class.php');
         $verify = new \Yboard\Verify([
             'imageW' => 290
         ]);

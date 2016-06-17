@@ -54,7 +54,7 @@ class Bootstrap extends Yaf\Bootstrap_Abstract {
         $router->addRoute('page', $route);
 
         //单个项目查询路由
-        $route = new Yaf\Route\Rewrite('items/item_id', ['module' => 'Index', 'controller' => 'Item', 'action' => 'show']);
+        $route = new Yaf\Route\Rewrite('items/:item_id', ['module' => 'Index', 'controller' => 'Item', 'action' => 'show']);
         $router->addRoute('item', $route);
 
         //分享地址
