@@ -10,30 +10,37 @@
  */
 namespace Yboard;
 
+use Yaf\Exception;
+
 class CommonService {
     protected function returnInfo($state = 0, $message = '系统错误', $extra = []) {
         return ['state' => $state, 'message' => $message, 'extra' => $extra];
     }
 
     protected function loadModel($table) {
-        \Yaf\Loader::import('Model.class.php');
-        \Yaf\Loader::import('CommonModel.class.php');
-        $table = ucfirst($table);
-        static $models;
-        if (isset($models[$table]) && $models[$table]) {
-            return $models[$table];
-        }
-        $file = MODEL_PATH . '/' . $table . 'Model.class.php';
-        if (PHP_OS == 'Linux') {
-            \Yaf\Loader::import($file);
-        } else {
-            require_once $file;
-        }
-        $class          = "\\Yboard\\" . $table . 'Model';
-        $model          = new $class();
-        $models[$table] = $model;
+        try {
+            \Yaf\Loader::import('Model.class.php');
+            \Yaf\Loader::import('CommonModel.class.php');
+            $table = ucfirst($table);
+            static $models;
+            if (isset($models[$table]) && $models[$table]) {
+                return $models[$table];
+            }
+            $file = MODEL_PATH . '/' . $table . 'Model.class.php';
+            if (PHP_OS == 'Linux') {
+                \Yaf\Loader::import($file);
+            } else {
+                require_once $file;
+            }
+            $class          = "\\Yboard\\" . $table . 'Model';
+            $model          = new $class();
+            $models[$table] = $model;
 
-        return $model;
+            return $model;
+        } catch (Exception $e) {
+            E($e->getMessage());
+        }
+
     }
 
     protected function parseParams($params) {

@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS zzhapi DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+
+USE zzhapi;
 /*Table structure for table `item` */
 
 DROP TABLE IF EXISTS `item`;

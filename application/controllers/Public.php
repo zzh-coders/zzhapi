@@ -43,9 +43,9 @@ class PublicController extends CommonController {
 
     public function verifyAction() {
         ob_clean();
-        Yaf\Loader::import(LIB_PATH . '/Verify.class.php');
+        Yaf\Loader::import('Verify.class.php');
         $verify = new \Yboard\Verify([
-            'imageW'=>290
+            'imageW' => 290
         ]);
         $verify->entry(1);
 
@@ -55,6 +55,13 @@ class PublicController extends CommonController {
     public function loginoutAction() {
         clearSession('userinfo');
         $this->success([], '退出成功', base_url('Public/login'));
+
+        return false;
+    }
+
+    public function testAction() {
+        $member_service = $this->loadService('Member');
+        $member_service->getInfoById(1);
 
         return false;
     }

@@ -53,7 +53,7 @@ class CommonController extends Yaf\Controller_Abstract {
 
     public function noLoginAction() {
         $no_login_action = array(
-            'Public' => array('login', 'verify','register'),
+            'Public' => array('login', 'verify', 'register','test'),
             'Page'   => array('share')
         );
         $request         = $this->getRequest();
@@ -112,23 +112,27 @@ class CommonController extends Yaf\Controller_Abstract {
     }
 
     protected function loadService($service_name) {
-        Yaf\Loader::import('CommonService.class.php');
-        $service_name = ucfirst($service_name);
-        static $services;
-        if (isset($services[$service_name]) && $services[$service_name]) {
-            return $services[$service_name];
-        }
-        $file = SERVICE_PATH . '/' . $service_name . 'Service.class.php';
-        if (PHP_OS == 'Linux') {
-            Yaf\Loader::import($file);
-        } else {
-            require_once $file;
-        }
-        $class                   = "\\Yboard\\" . $service_name . 'Service';
-        $service                 = new $class();
-        $services[$service_name] = $service;
+        try {
+            Yaf\Loader::import('CommonService.class.php');
+            $service_name = ucfirst($service_name);
+            static $services;
+            if (isset($services[$service_name]) && $services[$service_name]) {
+                return $services[$service_name];
+            }
+            $file = SERVICE_PATH . '/' . $service_name . 'Service.class.php';
+            if (PHP_OS == 'Linux') {
+                Yaf\Loader::import($file);
+            } else {
+                require_once $file;
+            }
+            $class                   = "\\Yboard\\" . $service_name . 'Service';
+            $service                 = new $class();
+            $services[$service_name] = $service;
 
-        return $service;
+            return $service;
+        } catch (\Yaf\Exception $e) {
+            E($e->getMessage());
+        }
     }
 
 
