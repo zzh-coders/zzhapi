@@ -252,12 +252,8 @@
 
         });
 
-
         $("#json-templ .editormd-enter-btn").click(function () {
-
-
             var datas = $("#json-templ .jsons").val();
-
             try {
                 Change($.parseJSON(datas));
             }
@@ -268,7 +264,6 @@
 
             json_table_data = '|' + lang["filed"] + '|' + lang["type"] + '|' + lang["description"] + '|\n' +
                 '|:-------|:-------|:-------|\n';
-
 
             $("#json-templ .jsons").val("");
             $("#json-templ").hide();
@@ -339,7 +334,7 @@
         var level_str = "- ";
         if (arguments.length > 1) {
             var level;
-            arguments[1] > 0 ? level = arguments[1] : level = 1;
+            level = arguments[1] > 0 ? arguments[1] : 1;
             for (var i = 0; i < level; i++) {
                 level_str += "- ";
             }
@@ -362,7 +357,7 @@
 
             }
             else {
-                json_table_data += '| ' + key + ' | ' + type + '| 无 |\n';
+                json_table_data += '| ' + key + ' | ' + type + '| ' + value + ' |\n';
             }
         }
     }

@@ -662,9 +662,9 @@ function getMenuTree($menus) {
         $html .= '<ul class="submenu">';
         foreach ($menus as $value) {
             $subs = (isset($value['subs']) && $value['subs']) ? $value['subs'] : [];
-            $html .= '<li><a href="' . $value['url'] . '" ' . ($subs ? 'class="dropdown-toggle"' : '') . '><i class="menu-icon fa fa-caret-right"></i>' . $value['name'] . '</a>';
-            $html .= ($subs) ? '<b class="arrow fa fa-angle-down"></b>' : '';
-            $html .= getMenuTree($subs);
+            $html .= '<li><a href="' . $value['url'] . '" ' . ($subs ? 'class="dropdown-toggle"' : '') . '><i class="menu-icon fa fa-caret-right"></i>' . $value['name'] ;
+            $html .= ($subs) ? '<b class="arrow fa fa-angle-down"></b></a>' : '</a>';
+            $html .= $subs ? getMenuTree($subs) : '';
             $html .= '</li>';
         }
         $html .= '</ul>';
