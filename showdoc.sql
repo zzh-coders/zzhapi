@@ -21,7 +21,7 @@ DROP TABLE IF EXISTS `item_member`;
 CREATE TABLE `item_member` (
   `item_member_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '项目关联表',
   `item_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '项目id',
-  `uid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户id',
+  `username` VARCHAR(10) NOT NULL DEFAULT '' COMMENT '用户名',
   `create_time` int(10) NOT NULL DEFAULT '0' COMMENT '创建时间',
   PRIMARY KEY (`item_member_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='项目成员表';
