@@ -38,6 +38,26 @@ class ItemController extends CommonController {
         return false;
     }
 
+
+    public function shareAction(){
+        $item_name   = $this->get('item_name');
+        $item_info = $this->item_service->getItemByName($item_name);
+        if (!$item_info) {
+            E('项目错误');
+        }
+
+        $this->output_data['nav'] = [
+            ['url' => '', 'name' => $item_info['item_name']]
+        ];
+
+        $this->output_data['item_info'] = $item_info;
+        $this->output_data['item_id']   = $item_info['item_id'];
+        $item_menu_service              = $this->loadService('ItemMenu');
+        $this->output_data['limit']     = $item_menu_service->getCountByItemId($item_info['item_id']);
+        $this->display('show', $this->output_data);
+
+        return false;
+    }
     public function getItenMenuAction() {
         $item_id = $this->get('item_id');
         if (!$item_id) {

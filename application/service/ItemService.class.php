@@ -120,4 +120,10 @@ class ItemService extends CommonService {
 
         return $item_model->getById($item_id);
     }
+
+    public function getItemByName($item_name){
+        $item_model = $this->loadModel('Item');
+
+        return $item_model->getInfoByItemName($item_name);
+    }
 }

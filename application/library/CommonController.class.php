@@ -47,13 +47,21 @@ class CommonController extends Yaf\Controller_Abstract {
             $this->redirect(base_url('/Public/Login'));
         }
         $this->output_data['userinfo'] = $this->userinfo;
-        $this->output_data['menus']    = $this->allowGetMenu() ? $this->getMenus() : [];
-        $this->output_data['limit']    = $this->limit = 15;
+        //获取当前用户包含的项目id
+        $this->output_data['item_ids'] = null;
+        if (!isAdminUser($this->userinfo['username'])) {
+            $item_user_service             = $this->loadService('ItemMember');
+            $user_item                     = $item_user_service->getItemByUserName($this->userinfo['username']);
+            $this->output_data['item_ids'] = $user_item['item_ids'];
+        }
+        $this->output_data['menus'] = $this->allowGetMenu() ? $this->getMenus() : [];
+        $this->output_data['limit'] = $this->limit = 15;
     }
 
     public function noLoginAction() {
         $no_login_action = array(
-            'Public' => array('login', 'verify', 'register','test'),
+            'Public' => array('login', 'verify', 'register', 'test'),
+            'Item'   => ['share', 'getitenmenu'],
             'Page'   => array('share')
         );
         $request         = $this->getRequest();
@@ -61,54 +69,6 @@ class CommonController extends Yaf\Controller_Abstract {
         $action          = $request->action;
 
         return (key_exists($controller, $no_login_action) && in_array($action, $no_login_action[$controller]));
-    }
-
-    public function allowGetMenu() {
-        $allow_get_menu_action = [
-            'Page/show',
-            'Item/show',
-            'Page/share'
-        ];
-        $request               = $this->getRequest();
-        $controller            = $request->controller;
-        $action                = $request->action;
-
-        return in_array(ucfirst($controller) . '/' . $action, $allow_get_menu_action);
-    }
-
-    public function getMenus() {
-        $item_id = $this->get('item_id');
-        if (!$item_id) {
-            return [];
-        }
-        $item_menu_service = $this->loadService('ItemMenu');
-        $result_menu       = $item_menu_service->getMenuByItemId($item_id);
-        array_unshift($result_menu, [
-            'url'  => base_url('Item/show/item_id/' . $item_id),
-            'name' => '目录管理',
-            'icon' => 'home',
-            'subs' => []
-        ]);
-        $item_service = $this->loadService('Item');
-        if ($item_service->isMeItem($this->userinfo['uid'], $item_id)) {
-            array_push($result_menu, [
-                'url'  => base_url('Page/add/item_id/' . $item_id),
-                'name' => '添加页面',
-                'icon' => 'plus',
-                'subs' => []
-            ]);
-        }
-
-        //获取项目的左侧栏目
-        return $result_menu;
-    }
-
-    public function get($key, $filter = true) {
-        if ($filter) {
-            return filterStr($this->getRequest()->get($key));
-        } else {
-            return $this->getRequest()->get($key);
-        }
     }
 
     protected function loadService($service_name) {
@@ -135,6 +95,67 @@ class CommonController extends Yaf\Controller_Abstract {
         }
     }
 
+    public function allowGetMenu() {
+        $allow_get_menu_action = [
+            'Page/show',
+            'Item/show',
+            'Page/share',
+            'Item/share'
+        ];
+        $request               = $this->getRequest();
+        $controller            = $request->controller;
+        $action                = $request->action;
+
+        return in_array(ucfirst($controller) . '/' . $action, $allow_get_menu_action);
+    }
+
+    public function getMenus() {
+        $item_id = $this->get('item_id');
+        if (!$item_id) {
+            $item_name    = $this->get('item_name');
+            $item_service = $this->loadService('Item');
+            $item_info    = $item_service->getItemByName($item_name);
+            if (!$item_info) {
+                return [];
+            }
+            $item_id = $item_info['item_id'];
+        }
+        $item_menu_service = $this->loadService('ItemMenu');
+        $result_menu       = $item_menu_service->getMenuByItemId($item_id);
+        $item_service      = $this->loadService('Item');
+        if (!isset($item_info) || !$item_info) {
+            $item_info = $item_service->getItemById($item_id);
+        }
+        array_unshift($result_menu, [
+            'url'  => (!$this->userinfo) ? base_url('name/' . $item_info['item_name']) : base_url('Item/show/item_id/' . $item_id),
+            'name' => '目录管理',
+            'icon' => 'home',
+            'subs' => []
+        ]);
+
+        $is_show_addpage = isAdminUser($this->userinfo['username']) || (isset($this->output_data['item_ids']) && $this->output_data['item_ids'] && in_array($item_id, $this->output_data['item_ids']));
+
+
+        if ($is_show_addpage || $item_service->isMeItem($item_id)) {
+            array_push($result_menu, [
+                'url'  => base_url('Page/add/item_id/' . $item_id),
+                'name' => '添加页面',
+                'icon' => 'plus',
+                'subs' => []
+            ]);
+        }
+
+        //获取项目的左侧栏目
+        return $result_menu;
+    }
+
+    public function get($key, $filter = true) {
+        if ($filter) {
+            return filterStr($this->getRequest()->get($key));
+        } else {
+            return $this->getRequest()->get($key);
+        }
+    }
 
     public function offset_format($total, $limit, $offset) {
         $total_page = ceil($total / $limit);//总页数

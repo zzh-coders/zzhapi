@@ -26,9 +26,7 @@ class IndexController extends CommonController {
         }
         //如果是管理员，则不需要进行筛选
         if (!isAdminUser($this->userinfo['username'])) {
-            $item_user_service = $this->loadService('ItemMember');
-            $user_item         = $item_user_service->getItemByUserName($this->userinfo['username']);
-            $params['item_id'] = $user_item['item_ids'];
+            $params['item_id'] = $this->output_data['item_ids'];
         }
 
         $item_service = $this->loadService('Item');

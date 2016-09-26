@@ -49,12 +49,13 @@ class ItemMenuService extends CommonService {
     }
 
     private function _getMenuTree(&$data, $parent_id, $item_id) {
+        $is_nologin  = (strpos($_SERVER['REQUEST_URI'], '/shares/') > -1 || strpos($_SERVER['REQUEST_URI'],'/name/')>-1);
         $result_data = [];
         if ($data) {
             foreach ($data as $k => $v) {
                 if ($v['parent_id'] == $parent_id) {
                     $result_data[] = [
-                        'url'  => ($v['type'] == 'page') ? base_url('pages/' . $v['id'] . '/' . $item_id) : 'javascript:;',
+                        'url'  => ($v['type'] == 'page') ? (($is_nologin) ? base_url('shares/' . $v['id'] . '/' . $item_id) : base_url('pages/' . $v['id'] . '/' . $item_id)) : 'javascript:;',
                         'name' => $v['name'],
                         'icon' => 'cogs',
                         'subs' => ($v['type'] == 'page') ? [] : $this->_getMenuTree($data, $v['id'], $item_id)

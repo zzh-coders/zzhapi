@@ -3,7 +3,8 @@
 <div class="row">
     <div class="col-xs-12">
         <!-- PAGE CONTENT BEGINS -->
-        <?php if ((isset($userinfo['username'])&&isAdminUser($userinfo['username']))||(isset($userinfo['uid']) && $userinfo['uid'] == $page_info['author_uid'])) { ?>
+        <?php if ((isset($userinfo['username'])&&isAdminUser($userinfo['username']))||(isset($userinfo['uid']) && $userinfo['uid'] == $page_info['author_uid']) || (isset($item_ids) && in_array($page_info['item_id'],$item_ids))) { ?>
+
             <div class="row">
                 <div class="col-xs-12">
                     <div class="pull-left">
@@ -38,7 +39,8 @@
 
 <?php Yaf\loader::import(__FOOTER__); ?>
 <script>
-    $.hight_nav('<?php echo base_url('pages/'.$page_info['page_id'].'/'.$page_info['item_id'])?>');
+    <?php $is_nologin = (strpos($_SERVER['REQUEST_URI'], '/shares/') > -1);?>
+    $.hight_nav('<?php echo ($is_nologin) ? base_url('shares/' . $page_info['page_id'] . '/' . $page_info['item_id']) : base_url('pages/' . $page_info['page_id'] . '/' . $page_info['item_id']);?>');
     $(function (e) {
         yboard.init();
 

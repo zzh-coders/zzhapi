@@ -3,7 +3,7 @@
 <div class="row">
     <div class="col-xs-12">
         <!-- PAGE CONTENT BEGINS -->
-        <?php if ((isset($userinfo['username'])&&isAdminUser($userinfo['username']))||(isset($userinfo['uid']) && $userinfo['uid'] == $item_info['uid'])) { ?>
+        <?php if ((isset($userinfo['username'])&&isAdminUser($userinfo['username']))||(isset($userinfo['uid']) && $userinfo['uid'] == $item_info['uid']) || (isset($item_ids) && in_array($item_info['item_id'],$item_ids))) { ?>
 
         <div class="row">
             <div class="col-xs-12">

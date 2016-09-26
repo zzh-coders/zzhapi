@@ -59,8 +59,11 @@ class Bootstrap extends Yaf\Bootstrap_Abstract {
 
         //分享地址
         $route = new Yaf\Route\Rewrite('shares/:page_id/:item_id', ['module' => 'Index', 'controller' => 'Page', 'action' => 'share']);
-        //使用路由器装载路由协议
         $router->addRoute('share', $route);
+        //分享地址
+        $item_name = new Yaf\Route\Rewrite('name/:item_name', ['module' => 'Index', 'controller' => 'Item', 'action' => 'share']);
+        //使用路由器装载路由协议
+        $router->addRoute('item_name', $item_name);
     }
 
     public function _initView(Yaf\Dispatcher $dispatcher) {
