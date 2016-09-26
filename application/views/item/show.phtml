@@ -3,6 +3,8 @@
 <div class="row">
     <div class="col-xs-12">
         <!-- PAGE CONTENT BEGINS -->
+        <?php if ((isset($userinfo['username'])&&isAdminUser($userinfo['username']))||(isset($userinfo['uid']) && $userinfo['uid'] == $item_info['uid'])) { ?>
+
         <div class="row">
             <div class="col-xs-12">
                 <div>
@@ -21,8 +23,9 @@
                 </div>
             </div>
         </div>
+            <div class="hr hr-10 dotted"></div>
+<?php } ?>
 
-        <div class="hr hr-10 dotted"></div>
         <div class="row">
             <div class="col-xs-12">
                 <table id="table"

@@ -28,4 +28,16 @@ class ItemMemberModel extends CommonModel {
         return $this->delete($this->_table, ['item_id' => $item_id]);
     }
 
+    public function getByItemId($item_id) {
+        if (!$item_id) {
+            return false;
+        }
+
+        return $this->select($this->_table, '*', ['item_id' => $item_id]);
+    }
+
+    public function getItemByUserName($username) {
+        return $this->select($this->_table, '*', ['username' => $username]);
+    }
+
 }

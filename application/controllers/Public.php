@@ -17,7 +17,7 @@ class PublicController extends CommonController {
             $member_service = $this->loadService('member');
 
 //            $ret = $member_service->verifyLogin($username, $password, $verify);
-            $ret = $member_service->login($username, $password);
+            $ret = $member_service->ldap_login($username, $password);
             if ($ret['state']) {
                 $this->success([], '登录成功', base_url('Index/index'));
             }
@@ -26,6 +26,7 @@ class PublicController extends CommonController {
     }
 
     public function registerAction() {
+        $this->error('不开放注册');
         if (IS_AJAX) {
             $username       = $this->post('username');
             $password       = $this->post('password');

@@ -24,13 +24,25 @@ class IndexController extends CommonController {
         if ($params) {
             $params = json_decode($params, true);
         }
-        $params['uid'] = $this->userinfo['uid'];
+        //如果是管理员，则不需要进行筛选
+        if (!isAdminUser($this->userinfo['username'])) {
+            $item_user_service = $this->loadService('ItemMember');
+            $user_item         = $item_user_service->getItemByUserName($this->userinfo['username']);
+            $params['item_id'] = $user_item['item_ids'];
+        }
+
         $item_service = $this->loadService('Item');
         $count        = $item_service->count($params);
 
         $offset = $this->offset_format($count, $limit, $offset);
 
         $list = $item_service->getlist($params, $limit, $offset * $limit);
+        foreach ($list as $k => $value) {
+            $list[$k]['option'] = '';
+            if ((isset($this->userinfo['username']) && isAdminUser($this->userinfo['username'])) || (isset($this->userinfo['uid']) && $this->userinfo['uid'] == $value['uid'])) {
+                $list[$k]['option'] = ' <a class="btn btn-white btn-purple btn-sm" onclick="javascript:user_designate(\'' . $value['item_id'] . '\');" href="javascript:void(0);">成员指派</a>';
+            }
+        }
         $this->ajaxRows($list, $count);
     }
 

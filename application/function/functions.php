@@ -662,7 +662,7 @@ function getMenuTree($menus) {
         $html .= '<ul class="submenu">';
         foreach ($menus as $value) {
             $subs = (isset($value['subs']) && $value['subs']) ? $value['subs'] : [];
-            $html .= '<li><a href="' . $value['url'] . '" ' . ($subs ? 'class="dropdown-toggle"' : '') . '><i class="menu-icon fa fa-caret-right"></i>' . $value['name'] ;
+            $html .= '<li><a href="' . $value['url'] . '" ' . ($subs ? 'class="dropdown-toggle"' : '') . '><i class="menu-icon fa fa-caret-right"></i>' . $value['name'];
             $html .= ($subs) ? '<b class="arrow fa fa-angle-down"></b></a>' : '</a>';
             $html .= $subs ? getMenuTree($subs) : '';
             $html .= '</li>';
@@ -683,4 +683,10 @@ function writeLog($message, $level) {
     \Yboard\Log::record($message, $level);
     \Yboard\Log::save();
 
+}
+
+function isAdminUser($username) {
+    $admin_username = explode(',', ADMIN_USERNAME);
+
+    return ($admin_username && in_array($username, $admin_username));
 }

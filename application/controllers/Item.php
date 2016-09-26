@@ -16,7 +16,7 @@ class ItemController extends CommonController {
         parent::init();
         $this->item_service = $this->loadService('Item');
     }
-    
+
 
     public function showAction() {
         $item_id   = $this->get('item_id');
@@ -107,5 +107,25 @@ class ItemController extends CommonController {
 
         return false;
 
+    }
+
+    public function getItemUserAction() {
+        $item_id = $this->get('item_id');
+
+        $item_member_service = $this->loadService('ItemMember');
+        $data                = $item_member_service->getByItemId($item_id,'username');
+
+        $this->success($data);
+    }
+
+    public function setItemUserAction() {
+        $item_id             = $this->post('item_id');
+        $username            = $this->post('username');
+        $item_member_service = $this->loadService('ItemMember');
+        $ret                 = $item_member_service->setItemUser($item_id, $username);
+        if (!$ret['state']) {
+            $this->error($ret['message']);
+        }
+        $this->success([], $ret['message']);
     }
 }

@@ -17,7 +17,7 @@ class CommonService {
         return ['state' => $state, 'message' => $message, 'extra' => $extra];
     }
 
-    protected function loadModel($table) {
+    protected function loadModel($table,$arg=null) {
         try {
             \Yaf\Loader::import('Model.class.php');
             \Yaf\Loader::import('CommonModel.class.php');
@@ -33,7 +33,7 @@ class CommonService {
                 require_once $file;
             }
             $class          = "\\Yboard\\" . $table . 'Model';
-            $model          = new $class();
+            $model          = new $class($arg);
             $models[$table] = $model;
 
             return $model;

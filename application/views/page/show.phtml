@@ -3,7 +3,7 @@
 <div class="row">
     <div class="col-xs-12">
         <!-- PAGE CONTENT BEGINS -->
-        <?php if (isset($userinfo['uid']) && $userinfo['uid'] == $page_info['author_uid']) { ?>
+        <?php if ((isset($userinfo['username'])&&isAdminUser($userinfo['username']))||(isset($userinfo['uid']) && $userinfo['uid'] == $page_info['author_uid'])) { ?>
             <div class="row">
                 <div class="col-xs-12">
                     <div class="pull-left">

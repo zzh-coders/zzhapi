@@ -47,6 +47,41 @@ class MemberService extends CommonService {
         return $this->returnInfo(1, '注册成功');
     }
 
+    public function ldap_login($username, $password) {
+        if (empty($username)) {
+            return $this->returnInfo(0, '用户不能为空');
+        }
+        if (empty($password)) {
+            return $this->returnInfo(0, '密码不能为空');
+        }
+        $ldap_model = $this->loadModel('ldap');
+        $bind       = $ldap_model->bind($username, $password);
+//        $info = $ldap_model->getUserInfo($username.LDAP_EMAIL);
+        if ($bind == 1) {
+            //ldap存在
+            $member_model = $this->loadModel('member');
+
+            $member = $member_model->fetch_by_username($username);
+            if (!$member) {
+                //数据库不存在
+                $member        = [
+                    'username'    => $username,
+                    'password'    => md5(rand(1, 2321)),
+                    'create_time' => NOW_TIME,
+                    'state'       => 1
+                ];
+                $uid           = $member_model->save($member);
+                $member['uid'] = $uid;
+            }
+            setSession('userinfo', $member);
+        } else {
+            //ldap中不存在该用户名密码
+            return $this->returnInfo(0, '用户不存在');
+        }
+
+        return $this->returnInfo(1, '登录成功');
+    }
+
     public function login($username, $password) {
         if (empty($username)) {
             return $this->returnInfo(0, '用户不能为空');
