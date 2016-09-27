@@ -2,6 +2,7 @@
 
 <div class="row">
     <div class="col-xs-12">
+        <?php if(isset($userinfo)&&$userinfo){?>
         <!-- PAGE CONTENT BEGINS -->
         <div class="row">
             <div class="col-xs-12">
@@ -22,7 +23,7 @@
             </div>
         </div>
         <div class="hr hr-10 dotted"></div>
-
+        <?php }?>
         <div class="row">
             <div class="col-xs-12">
                 <table id="table"
@@ -37,7 +38,9 @@
                 >
                     <thead>
                     <tr>
+                        <?php if(isset($userinfo)&&$userinfo){?>
                         <th data-checkbox="true" data-class="center"></th>
+                        <?php }?>
                         <th data-field="uid">创建人</th>
                         <th data-field="item_name">项目名称</th>
                         <th data-field="item_description">项目描述</th>
