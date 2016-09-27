@@ -36,9 +36,10 @@ class IndexController extends CommonController {
 
         $list = $item_service->getlist($params, $limit, $offset * $limit);
         foreach ($list as $k => $value) {
-            $list[$k]['option'] = '';
+            $in_url             = ($this->userinfo) ? base_url('items/' . $value['item_id']) : base_url('name/' . $value['item_name']);
+            $list[$k]['option'] = '<a class="btn btn-white btn-purple btn-sm" href="' . $in_url . '">进入项目</a>';
             if ((isset($this->userinfo['username']) && isAdminUser($this->userinfo['username'])) || (isset($this->userinfo['uid']) && $this->userinfo['uid'] == $value['uid'])) {
-                $list[$k]['option'] = ' <a class="btn btn-white btn-purple btn-sm" onclick="javascript:user_designate(\'' . $value['item_id'] . '\');" href="javascript:void(0);">成员指派</a>';
+                $list[$k]['option'] .= ' <a class="btn btn-white btn-purple btn-sm" onclick="javascript:user_designate(\'' . $value['item_id'] . '\');" href="javascript:void(0);">成员指派</a>';
             }
         }
         $this->ajaxRows($list, $count);

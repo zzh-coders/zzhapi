@@ -50,9 +50,16 @@ class CommonController extends Yaf\Controller_Abstract {
         //获取当前用户包含的项目id
         $this->output_data['item_ids'] = null;
         if (!isAdminUser($this->userinfo['username'])) {
-            $item_user_service             = $this->loadService('ItemMember');
-            $user_item                     = $item_user_service->getItemByUserName($this->userinfo['username']);
-            $this->output_data['item_ids'] = $user_item['item_ids'];
+            $item_user_service = $this->loadService('ItemMember');
+            $user_item         = $item_user_service->getItemByUserName($this->userinfo['username']);
+            $item_ids          = $user_item['item_ids'];
+            $item_service      = $this->loadService('Item');
+            if ($item_id = $item_service->getMyItem($this->userinfo['uid'])) {
+                $item_ids = array_merge($item_ids, $item_id);
+            }
+
+            $this->output_data['item_ids'] = $item_ids;
+            unset($item_ids);
         }
         $this->output_data['menus'] = $this->allowGetMenu() ? $this->getMenus() : [];
         $this->output_data['limit'] = $this->limit = 15;
@@ -62,7 +69,8 @@ class CommonController extends Yaf\Controller_Abstract {
         $no_login_action = array(
             'Public' => array('login', 'verify', 'register', 'test'),
             'Item'   => ['share', 'getitenmenu'],
-            'Page'   => array('share')
+            'Page'   => array('share'),
+            'Index'  => ['index', 'getlist']
         );
         $request         = $this->getRequest();
         $controller      = $request->controller;

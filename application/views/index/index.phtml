@@ -108,7 +108,7 @@
     });
 
     function optionFormatter(value,obj) {
-        return (value) ? '<a class="btn btn-white btn-purple btn-sm" href="<?php echo base_url('items');?>/' + value + '">进入项目</a>'+obj.option : '';
+        return (value) ? obj.option : '';
     }
 
     function getFormData(obj, callBack) {

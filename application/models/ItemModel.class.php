@@ -22,6 +22,17 @@ class ItemModel extends CommonModel {
         return $result_data;
     }
 
+    public function getInfoByUid($uid) {
+        $result_data = [];
+        if (!$uid) {
+            return $result_data;
+        }
+
+        $result_data = $this->select($this->_table, '*', ['uid' => $uid]);
+
+        return $result_data;
+    }
+
     public function getList($params, $page, $limit) {
         $params = $params ? $params : [];
         $where  = array_merge(

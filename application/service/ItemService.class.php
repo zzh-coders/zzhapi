@@ -105,6 +105,14 @@ class ItemService extends CommonService {
         return $item_model->countByParams($params);
     }
 
+    public function getMyItem($uid) {
+        $item_model = $this->loadModel('Item');
+        $item       = $item_model->getInfoByUid($uid);
+        $item_ids   = ($item) ? array_column($item, 'item_id') : null;
+
+        return $item_ids;
+    }
+
     public function isMeItem($uid, $item_id) {
         if (!$item_id) {
             return false;
@@ -121,7 +129,7 @@ class ItemService extends CommonService {
         return $item_model->getById($item_id);
     }
 
-    public function getItemByName($item_name){
+    public function getItemByName($item_name) {
         $item_model = $this->loadModel('Item');
 
         return $item_model->getInfoByItemName($item_name);
