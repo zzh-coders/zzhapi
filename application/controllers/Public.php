@@ -23,6 +23,7 @@ class PublicController extends CommonController {
                 if (!$http_referer) {
                     $http_referer = base_url('Index/index');
                 }
+                clearCookie('referer_page');
                 $this->success([], '登录成功', $http_referer);
             }
             $this->error($ret['message']);
