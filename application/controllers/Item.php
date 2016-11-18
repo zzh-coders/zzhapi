@@ -140,7 +140,7 @@ class ItemController extends CommonController {
 
     public function setItemUserAction() {
         $item_id             = $this->post('item_id');
-        $username            = $this->post('username');
+        $username            = $this->post('username',false);
         $item_member_service = $this->loadService('ItemMember');
         $ret                 = $item_member_service->setItemUser($item_id, $username);
         if (!$ret['state']) {
