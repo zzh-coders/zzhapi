@@ -30,3 +30,12 @@
 .table td{
     vertical-align: middle !important;
 }
+.nav-search .nav-search-input{
+    padding-left: 6px;
+    padding-right: 24px;
+}
+.input-icon>.ace-icon{
+    right:3px;
+    left: inherit;
+    cursor: pointer;
+}

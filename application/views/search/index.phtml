@@ -1,0 +1,28 @@
+<?php Yaf\loader::import(__HEADER__); ?>
+<div class="row">
+    <div class="col-xs-12">
+        关键字：<span class="text-danger"><?php echo $key; ?></span>
+    </div>
+    <div class="col-xs-12">
+        <?php
+        foreach ($list as $value) {
+        $page_desc  = stripHTML($value['page_desc']);
+        $page_title = stripHTML($value['page_title']);
+        if (strpos($page_desc, $key) > -1) {
+            $page_desc = str_replace($key, '<span class="text-danger">' . $key . '</span>', $page_desc);
+        }
+        if (strpos($page_title, $key) > -1) {
+            $page_title = str_replace($key, '<span class="text-danger">' . $key . '</span>', $page_title);
+        }
+        ?>
+        <dl style="margin-top: 10px">
+            <dt><a target="_blank" href="<?php echo base_url('shares/' . $value['page_id'] . '/' . $value['item_id']); ?>"> <?php echo $page_title; ?></a></dt>
+            <dd><?php echo $page_desc; ?></dd>
+            <dl>
+                <?php } ?>
+
+
+    </div>
+</div><!-- /.row -->
+
+<?php Yaf\loader::import(__FOOTER__); ?>

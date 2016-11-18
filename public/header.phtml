@@ -77,9 +77,9 @@
                     <li class="light-blue">
                         <a data-toggle="dropdown" href="#" class="dropdown-toggle">
                             <img class="nav-user-photo" src="<?php echo __ASSETS__; ?>/avatars/user.jpg" alt="<?php echo $userinfo['username']; ?>"/>
-                                    <span class="user-info">
+                            <span class="user-info">
                                         <small>欢迎光临,</small>
-                                        <?php echo $userinfo['username']; ?>
+                                <?php echo $userinfo['username']; ?>
                                     </span>
 
                             <i class="ace-icon fa fa-caret-down"></i>
@@ -100,11 +100,11 @@
                             登录
                         </a>
                     </li>
-<!--                    <li class="grey">-->
-<!--                        <a href="--><?php //echo base_url('Public/register'); ?><!--" class="dropdown-toggle">-->
-<!--                            注册-->
-<!--                        </a>-->
-<!--                    </li>-->
+                    <!--                    <li class="grey">-->
+                    <!--                        <a href="--><?php //echo base_url('Public/register'); ?><!--" class="dropdown-toggle">-->
+                    <!--                            注册-->
+                    <!--                        </a>-->
+                    <!--                    </li>-->
                 <?php } ?>
             </ul>
         </div>
@@ -172,7 +172,7 @@
                 <ul class="breadcrumb">
                     <li>
                         <i class="ace-icon fa fa-home"></i>
-                        <a href="<?php echo base_url();?>">首页</a>
+                        <a href="<?php echo base_url(); ?>">首页</a>
                     </li>
                     <?php if (isset($nav) && $nav) {
                         foreach ($nav as $vo) {
@@ -184,6 +184,20 @@
                         }
                     } ?>
                 </ul><!-- /.breadcrumb -->
+
+                <?php if ((isset($item_info) && $item_info) || (isset($page_info) && $page_info)) {
+                    $item_id = isset($item_info['item_id'])?$item_info['item_id']:$page_info['item_id'];
+                    ?>
+                    <div class="nav-search" id="nav-search">
+                        <form class="form-search">
+								<span class="input-icon">
+									<input type="text" placeholder="查找..." class="nav-search-input" id="nav-search-input" autocomplete="off"/>
+									<i class="ace-icon fa fa-search nav-search-icon"></i>
+                                    <input type="hidden" id="item_id" value="<?php echo $item_id;?>">
+								</span>
+                        </form>
+                    </div><!-- /.nav-search -->
+                <?php } ?>
             </div>
 
             <div class="page-content">

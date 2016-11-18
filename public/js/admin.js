@@ -15,7 +15,6 @@ $(function (e) {
             }
             //绑定按钮点击事件
             _this.bindBtnClick();
-
             $('input[type=file]').ace_file_input({
                 no_file: '文件上传 ...',
                 btn_choose: '选择',
@@ -25,11 +24,11 @@ $(function (e) {
                 thumbnail: false
             });
             $('.date-picker').datepicker({
-                    autoclose: true,
-                    todayHighlight: true,
-                    format: 'yyyy-mm-dd'
-                })
-                //show datepicker when clicking on the icon
+                autoclose: true,
+                todayHighlight: true,
+                format: 'yyyy-mm-dd'
+            })
+            //show datepicker when clicking on the icon
                 .next().on(ace.click_event, function () {
                 $(this).prev().focus();
             });
@@ -146,7 +145,7 @@ $(function (e) {
                     $(_this.config.tableId).bootstrapTable('refresh', params);
                 });
             }
-            
+
             $('#loginOut').on(ace.click_event, function (e) {
                 $.post($(this).attr('data-url'), {}, function (data) {
                     if (data.code == 200) {
@@ -161,7 +160,32 @@ $(function (e) {
                         $.popMessage('error', data.message);
                     }
                 }, 'json');
-            })
+            });
+
+            /**查询操作**/
+            var nav_search = $('#nav-search');
+
+            if (nav_search.length > 0) {
+                nav_search.find('.nav-search-icon').on(ace.click_event, function (e) {
+                    var item_id = $('#item_id').val();
+                    var key = $('#nav-search-input').val();
+                    if (key != '') {
+                        window.location.href = '/search/' + item_id + '/' + key;
+                    }
+
+                });
+                $(document).keypress(function (e) {
+                    // 回车键事件
+                    if (e.which == 13) {
+                        var item_id = $('#item_id').val();
+                        var key = $('#nav-search-input').val();
+                        if (key != '') {
+                            window.location.href = '/search/' + item_id + '/' + key;
+                            e.preventDefault();
+                        }
+                    }
+                });
+            }
         }
     });
     window.yboard = new yboard();

@@ -11,15 +11,19 @@
 class PublicController extends CommonController {
     public function loginAction() {
         if (IS_AJAX) {
-            $username = $this->post('username');
-            $password = $this->post('password', 'post');
+            $username = $this->post('username', false);
+            $password = $this->post('password', false);
 //            $verify         = getRequest('verify', 'post');
             $member_service = $this->loadService('member');
 
 //            $ret = $member_service->verifyLogin($username, $password, $verify);
             $ret = $member_service->ldap_login($username, $password);
             if ($ret['state']) {
-                $this->success([], '登录成功', base_url('Index/index'));
+                $http_referer = getCookie('referer_page');
+                if (!$http_referer) {
+                    $http_referer = base_url('Index/index');
+                }
+                $this->success([], '登录成功', $http_referer);
             }
             $this->error($ret['message']);
         }

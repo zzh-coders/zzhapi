@@ -66,6 +66,7 @@ CREATE TABLE `page` (
   `item_id` int(10) NOT NULL DEFAULT '0',
   `cat_id` int(10) NOT NULL DEFAULT '0',
   `page_title` varchar(50) NOT NULL DEFAULT '',
+  `page_desc` varchar(255) NOT NULL DEFAULT '' COMMENT '描述字符',
   `page_content` text NOT NULL,
   `order` int(10) NOT NULL DEFAULT '99' COMMENT '顺序号。数字越小越靠前。若此值全部相等时则按id排序',
   `create_time` int(10) NOT NULL DEFAULT '0',

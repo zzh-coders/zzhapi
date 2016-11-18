@@ -44,7 +44,11 @@ class CommonController extends Yaf\Controller_Abstract {
          */
         $this->userinfo = getSession('userinfo');
         if (!$this->userinfo && !$this->noLoginAction()) {
-            $this->redirect(base_url('/Public/Login'));
+            $http_referer = $_SERVER['REQUEST_URI'] ? base_url($_SERVER['REQUEST_URI']) : base_url('Index/index');
+            if (strpos($http_referer, base_url()) > -1) {
+                saveCookie('referer_page', $http_referer);
+            }
+            header('Location: ' . base_url('/Public/Login'));
         }
         $this->output_data['userinfo'] = $this->userinfo;
         //获取当前用户包含的项目id
@@ -70,7 +74,8 @@ class CommonController extends Yaf\Controller_Abstract {
             'Public' => array('login', 'verify', 'register', 'test'),
             'Item'   => ['share', 'getitenmenu'],
             'Page'   => array('share'),
-            'Index'  => ['index', 'getlist']
+            'Index'  => ['index', 'getlist'],
+            'Search' => ['index'],
         );
         $request         = $this->getRequest();
         $controller      = $request->controller;
@@ -144,7 +149,7 @@ class CommonController extends Yaf\Controller_Abstract {
         $is_show_addpage = isAdminUser($this->userinfo['username']) || (isset($this->output_data['item_ids']) && $this->output_data['item_ids'] && in_array($item_id, $this->output_data['item_ids']));
 
 
-        if ($is_show_addpage || $item_service->isMeItem($item_id)) {
+        if ($is_show_addpage || $item_service->isMeItem($this->userinfo['uid'], $item_id)) {
             array_push($result_menu, [
                 'url'  => base_url('Page/add/item_id/' . $item_id),
                 'name' => '添加页面',

@@ -579,7 +579,7 @@ function saveCookie($key, $value, $expire = 3600, $path = '/', $domain = '', $ht
  * 获取cookie
  */
 function getCookie($key) {
-    return trim(getConfig('cookie/prefix') . $_COOKIE[$key]);
+    return trim($_COOKIE[getConfig('cookie/prefix') . $key]);
 }
 
 /**

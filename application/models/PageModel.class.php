@@ -27,4 +27,27 @@ class PageModel extends CommonModel {
 
         return $this->select($this->_table, '*', $where);
     }
+
+    public function getInfoByIdAndName($item_id, $name) {
+        $where = [
+            'item_id' => $item_id,
+            "OR"      => [
+                "page_title[~]" => $name,
+                "page_desc[~]"  => $name,
+            ],
+            'ORDER'   => 'order ASC'
+        ];
+
+        return $this->select($this->_table, '*', $where);
+    }
+
+    public function getInfoIsDescNull() {
+        $where = [
+            'page_desc' => '',
+            'ORDER'     => 'order ASC',
+            'LIMIT'     => [0, 200]
+        ];
+
+        return $this->select($this->_table, '*', $where);
+    }
 }

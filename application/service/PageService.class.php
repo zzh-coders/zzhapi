@@ -43,9 +43,18 @@ class PageService extends CommonService {
         if (!$cat_id) {
             return $this->returnInfo(0, '目录id不能为空');
         }
+
+        $parent    = '/简要描述：\*\*\n\n([\s\S]*?)\n\n\*\*请求URL/i';
+        $page_desc = $page_title;
+        preg_match_all($parent, $page_content, $match);
+        if (isset($match[1][0]) && $match[1][0]) {
+            $page_desc = str_replace('-', ' ', $match[1][0]);
+        }
+
         $data       = [
             'item_id'         => $item_id,
             'page_title'      => $page_title,
+            'page_desc'       => trim($page_desc),
             'page_content'    => $page_content,
             'order'           => $s_number ? $s_number : 99,
             'cat_id'          => $cat_id,
@@ -78,9 +87,16 @@ class PageService extends CommonService {
         if (!$cat_id) {
             return $this->returnInfo(0, '目录id不能为空');
         }
+        $parent    = '/简要描述：\*\*\n\n([\s\S]*?)\n\n\*\*请求URL/i';
+        $page_desc = $page_title;
+        preg_match_all($parent, $page_content, $match);
+        if (isset($match[1][0]) && $match[1][0]) {
+            $page_desc = str_replace('-', ' ', $match[1][0]);
+        }
         $data       = [
             'item_id'         => $item_id,
             'page_title'      => $page_title,
+            'page_desc'       => trim($page_desc),
             'page_content'    => $page_content,
             'order'           => $s_number ? $s_number : 99,
             'cat_id'          => $cat_id,
