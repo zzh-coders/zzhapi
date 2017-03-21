@@ -7,7 +7,7 @@
  * @author root
  */
 class ErrorController extends Yaf\Controller_Abstract {
-    public function errorAction(\Yaf\Exception $exception) {
+    public function errorAction($exception = null) {
         if (APP_DEBUG) {
             echo $exception->getMessage();
         } else {

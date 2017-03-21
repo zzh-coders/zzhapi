@@ -23,7 +23,7 @@ class CommonModel extends Model {
             'server'        => $config['host'],
             'username'      => $config['user'],
             'password'      => $config['pswd'],
-            'charset'       => 'utf-8',
+            'charset'       => $config['charset'],
             // 可选参数
             'port'          => $config['port'],
             'option'        => [

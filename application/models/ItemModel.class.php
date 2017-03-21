@@ -33,7 +33,7 @@ class ItemModel extends CommonModel {
         return $result_data;
     }
 
-    public function getList($params, $page, $limit) {
+    public function getList($params, $page, $limit, $field) {
         $params = $params ? $params : [];
         $where  = array_merge(
             $params,
@@ -42,7 +42,7 @@ class ItemModel extends CommonModel {
                 'LIMIT' => [(int)$limit, (int)$page]
             ]
         );
-        $result = $this->select($this->_table, '*', $where);
+        $result = $this->select($this->_table, $field ? $field : '*', $where);
 
         return $result;
     }

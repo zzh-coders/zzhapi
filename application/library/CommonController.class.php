@@ -43,7 +43,7 @@ class CommonController extends Yaf\Controller_Abstract {
          * 登录的控制器是Login/Index地方。
          */
         $this->userinfo = getSession('userinfo');
-        if (!$this->userinfo && !$this->noLoginAction()) {
+        if (php_sapi_name() != 'cli' && !$this->userinfo && !$this->noLoginAction()) {
             $http_referer = $_SERVER['REQUEST_URI'] ? base_url($_SERVER['REQUEST_URI']) : base_url('Index/index');
             if (strpos($http_referer, base_url()) > -1) {
                 saveCookie('referer_page', $http_referer);

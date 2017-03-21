@@ -1,3 +1,4 @@
 /.idea
-/log
+/log/*
+/conf/*
 # Created by .ignore support plugin (hsz.mobi)

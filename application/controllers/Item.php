@@ -39,8 +39,9 @@ class ItemController extends CommonController {
     }
 
 
-    public function shareAction(){
-        $item_name   = $this->get('item_name');
+    public function shareAction() {
+        $item_name = $this->get('item_name');
+        $item_name = urldecode($item_name);
         $item_info = $this->item_service->getItemByName($item_name);
         if (!$item_info) {
             E('项目错误');
@@ -58,6 +59,7 @@ class ItemController extends CommonController {
 
         return false;
     }
+
     public function getItenMenuAction() {
         $item_id = $this->get('item_id');
         if (!$item_id) {
@@ -133,14 +135,14 @@ class ItemController extends CommonController {
         $item_id = $this->get('item_id');
 
         $item_member_service = $this->loadService('ItemMember');
-        $data                = $item_member_service->getByItemId($item_id,'username');
+        $data                = $item_member_service->getByItemId($item_id, 'username');
 
         $this->success($data);
     }
 
     public function setItemUserAction() {
         $item_id             = $this->post('item_id');
-        $username            = $this->post('username',false);
+        $username            = $this->post('username', false);
         $item_member_service = $this->loadService('ItemMember');
         $ret                 = $item_member_service->setItemUser($item_id, $username);
         if (!$ret['state']) {

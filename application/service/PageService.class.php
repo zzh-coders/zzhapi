@@ -111,4 +111,26 @@ class PageService extends CommonService {
 
         return $this->returnInfo(0, '信息编辑失败');
     }
+
+    public function getList($params, $limit = 0, $page = 20, $field = []) {
+        $params     = $this->parseParams($params);
+        $page_model = $this->loadModel('Page');
+        $data       = $page_model->getList($params, $limit, $page, $field);
+        if ($field && !in_array('create_time', $field)) {
+            return $data;
+        }
+        foreach ($data as $k => $v) {
+            $data[$k]['create_time'] = date('Y-m-d H:i', $v['create_time']);
+        }
+
+        return $data;
+    }
+
+    public function getCount($params) {
+        $params     = $this->parseParams($params);
+        $page_model = $this->loadModel('Page');
+        $count      = $page_model->getCount($params);
+
+        return $count;
+    }
 }

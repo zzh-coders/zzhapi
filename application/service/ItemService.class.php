@@ -5,10 +5,13 @@ namespace Yboard;
 
 class ItemService extends CommonService {
 
-    public function getList($params, $limit = 0, $page = 20) {
+    public function getList($params, $limit = 0, $page = 20, $field = []) {
         $params     = $this->parseParams($params);
         $item_model = $this->loadModel('Item');
-        $data       = $item_model->getList($params, $limit, $page);
+        $data       = $item_model->getList($params, $limit, $page, $field);
+        if ($field && !in_array('create_time', $field)) {
+            return $data;
+        }
         foreach ($data as $k => $v) {
             $data[$k]['create_time'] = date('Y-m-d H:i', $v['create_time']);
         }

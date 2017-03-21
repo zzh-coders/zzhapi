@@ -50,4 +50,25 @@ class PageModel extends CommonModel {
 
         return $this->select($this->_table, '*', $where);
     }
+
+    public function getList($params, $page, $limit, $field) {
+        $params = $params ? $params : [];
+        $where  = array_merge(
+            $params,
+            [
+                'ORDER' => 'create_time DESC',
+                'LIMIT' => [(int)$limit, (int)$page]
+            ]
+        );
+        $result = $this->select($this->_table, $field ? $field : '*', $where);
+
+        return $result;
+    }
+
+    public function getCount($params) {
+        $params = $params ? $params : [];
+        $count  = $this->count($this->_table, $params);
+
+        return $count;
+    }
 }
