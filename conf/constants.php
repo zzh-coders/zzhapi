@@ -14,7 +14,7 @@ define('DATA_BACKUP_PART_SIZE', 20971520);//数据库备份卷大小
 define('DATA_BACKUP_COMPRESS', 1);//数据库备份文件是否启用压缩
 define('DATA_BACKUP_COMPRESS_LEVEL', 9);//数据库备份文件压缩级别
 
-define('LDAP_HOST','*');
-define('LDAP_EMAIL','*');
+//define('LDAP_HOST','*');
+//define('LDAP_EMAIL','*');
 
 define('ADMIN_USERNAME', '');

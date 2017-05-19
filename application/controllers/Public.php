@@ -8,16 +8,17 @@
  * @since        1.0
  * @time        2016/4/12 22:53
  */
-class PublicController extends CommonController {
-    public function loginAction() {
+class PublicController extends CommonController
+{
+    public function loginAction()
+    {
         if (IS_AJAX) {
             $username = $this->post('username', false);
             $password = $this->post('password', false);
-//            $verify         = getRequest('verify', 'post');
             $member_service = $this->loadService('member');
 
-//            $ret = $member_service->verifyLogin($username, $password, $verify);
-            $ret = $member_service->ldap_login($username, $password);
+            $ret = $member_service->login($username, $password);
+//            $ret = $member_service->ldap_login($username, $password);
             if ($ret['state']) {
                 $http_referer = getCookie('referer_page');
                 if (!$http_referer) {
@@ -30,13 +31,14 @@ class PublicController extends CommonController {
         }
     }
 
-    public function registerAction() {
-        $this->error('不开放注册');
+    public function registerAction()
+    {
+//        $this->error('不开放注册');
         if (IS_AJAX) {
-            $username       = $this->post('username');
-            $password       = $this->post('password');
-            $confirm_pass   = $this->post('confirm_pass');
-            $verify         = $this->post('verify');
+            $username = $this->post('username');
+            $password = $this->post('password');
+            $confirm_pass = $this->post('confirm_pass');
+            $verify = $this->post('verify');
             $member_service = $this->loadService('member');
 
             $ret = $member_service->register($username, $password, $confirm_pass, $verify);
@@ -47,7 +49,8 @@ class PublicController extends CommonController {
         }
     }
 
-    public function verifyAction() {
+    public function verifyAction()
+    {
         ob_clean();
         Yaf\Loader::import('Verify.class.php');
         $verify = new \Yboard\Verify([
@@ -58,14 +61,16 @@ class PublicController extends CommonController {
         return false;
     }
 
-    public function loginoutAction() {
+    public function loginoutAction()
+    {
         clearSession('userinfo');
         $this->success([], '退出成功', base_url('Public/login'));
 
         return false;
     }
 
-    public function testAction() {
+    public function testAction()
+    {
         $member_service = $this->loadService('Member');
         $member_service->getInfoById(1);
 
