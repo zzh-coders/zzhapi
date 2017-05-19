@@ -66,9 +66,9 @@ class Bootstrap extends Yaf\Bootstrap_Abstract {
         $router->addRoute('name', $route);
 
         //查询
-//        $route = new Yaf\Route\Rewrite('search/:item_id/:key', ['module' => 'Index', 'controller' => 'Search', 'action' => 'index']);
-//        //使用路由器装载路由协议
-//        $router->addRoute('search', $route);
+        $route = new Yaf\Route\Rewrite('search/:item_id/:key', ['module' => 'Index', 'controller' => 'Search', 'action' => 'index']);
+        //使用路由器装载路由协议
+        $router->addRoute('search', $route);
     }
 
     public function _initView(Yaf\Dispatcher $dispatcher) {
