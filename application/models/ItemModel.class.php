@@ -33,7 +33,7 @@ class ItemModel extends CommonModel {
         return $result_data;
     }
 
-    public function getList($params, $page, $limit, $field) {
+    public function getList($params, $page, $limit, $field=[]) {
         $params = $params ? $params : [];
         $where  = array_merge(
             $params,

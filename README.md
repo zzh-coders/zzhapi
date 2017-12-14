@@ -1,5 +1,3 @@
-项目名：未想好，开发暂时用了域名book.phper.com。（改host就可以）
-
 环境：
 PHP5.5+
 
@@ -18,8 +16,6 @@ yaf.use_namespace=On ;开启命名空间
 {rootPath}/conf/application.ini
 找到
 [dev : common]
-;域名配置
-base_url = 'http://book.phper.com'
 
 ;数据库配置
 db.type = mysql

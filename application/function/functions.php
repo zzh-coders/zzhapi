@@ -1,6 +1,7 @@
 <?php
 
-function slash_item($item) {
+function slash_item($item)
+{
     $config_item = getConfig($item);
     if (trim($config_item) === '') {
         return '';
@@ -9,7 +10,8 @@ function slash_item($item) {
     return rtrim($config_item, '/') . '/';
 }
 
-function filter($content) {
+function filter($content)
+{
     if (!get_magic_quotes_gpc()) {
         return addslashes($content);
     } else {
@@ -18,7 +20,8 @@ function filter($content) {
 }
 
 //对字符串等进行过滤
-function filterStr($arr) {
+function filterStr($arr)
+{
     if (!isset($arr)) {
         return null;
     }
@@ -34,12 +37,13 @@ function filterStr($arr) {
     return $arr;
 }
 
-function stripHTML($content, $xss = true) {
+function stripHTML($content, $xss = true)
+{
     $search = array(
-        "@<script(.*?)</script>@is",
-        "@<iframe(.*?)</iframe>@is",
-        "@<style(.*?)</style>@is",
-        "@<(.*?)>@is"
+        '@<script(.*?)</script>@is',
+        '@<iframe(.*?)</iframe>@is',
+        '@<style(.*?)</style>@is',
+        '@<(.*?)>@is',
     );
 
     $content = preg_replace($search, '', $content);
@@ -65,7 +69,7 @@ function stripHTML($content, $xss = true) {
             'layer',
             'bgsound',
             'title',
-            'base'
+            'base',
         );
 
         $ra2 = array(
@@ -146,9 +150,9 @@ function stripHTML($content, $xss = true) {
             'onstart',
             'onstop',
             'onsubmit',
-            'onunload'
+            'onunload',
         );
-        $ra  = array_merge($ra1, $ra2);
+        $ra = array_merge($ra1, $ra2);
 
         $content = str_ireplace($ra, '', $content);
     }
@@ -156,7 +160,8 @@ function stripHTML($content, $xss = true) {
     return strip_tags($content);
 }
 
-function removeXSS($val) {
+function removeXSS($val)
+{
     // remove all non-printable characters. CR(0a) and LF(0b) and TAB(9) are allowed
     // this prevents some character re-spacing such as <javaΘscript>
     // note that you have to handle splits with \n, \r, and \t later since they *are* allowed in some inputs
@@ -168,7 +173,7 @@ function removeXSS($val) {
     $search .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $search .= '1234567890!@#$%^&*()';
     $search .= '~`";:?+/={}[]-_|\'\\';
-    for ($i = 0; $i < strlen($search); $i++) {
+    for ($i = 0; $i < strlen($search); ++$i) {
         // ;? matches the ;, which is optional
         // 0{0,7} matches any padded zeros, which are optional and go up to 8 chars
 
@@ -199,10 +204,10 @@ function removeXSS($val) {
         'layer',
         'bgsound',
         'title',
-        'base'
+        'base',
     );
 
-    $ra2 = Array(
+    $ra2 = array(
         'onabort',
         'onactivate',
         'onafterprint',
@@ -280,16 +285,16 @@ function removeXSS($val) {
         'onstart',
         'onstop',
         'onsubmit',
-        'onunload'
+        'onunload',
     );
-    $ra  = array_merge($ra1, $ra2);
+    $ra = array_merge($ra1, $ra2);
 
     $found = true; // keep replacing as long as the previous round replaced something
     while ($found == true) {
         $val_before = $val;
-        for ($i = 0; $i < sizeof($ra); $i++) {
+        for ($i = 0; $i < sizeof($ra); ++$i) {
             $pattern = '/';
-            for ($j = 0; $j < strlen($ra[$i]); $j++) {
+            for ($j = 0; $j < strlen($ra[$i]); ++$j) {
                 if ($j > 0) {
                     $pattern .= '(';
                     $pattern .= '(&#[x|X]0{0,8}([9][a][b]);?)?';
@@ -300,7 +305,7 @@ function removeXSS($val) {
             }
             $pattern .= '/i';
             $replacement = substr($ra[$i], 0, 2) . '<x>' . substr($ra[$i], 2); // add in <> to nerf the tag
-            $val         = preg_replace($pattern, $replacement, $val); // filter out the hex tags
+            $val = preg_replace($pattern, $replacement, $val); // filter out the hex tags
             if ($val_before == $val) {
                 // no replacements were made, so exit the loop
                 $found = false;
@@ -312,9 +317,10 @@ function removeXSS($val) {
 }
 
 /**
- *  Strip specail SQL chars
+ *  Strip specail SQL chars.
  */
-function stripSQLChars($str) {
+function stripSQLChars($str)
+{
     $replace = array(
         'SELECT',
         'INSERT',
@@ -347,17 +353,18 @@ function stripSQLChars($str) {
         'INTO',
         'LIKE',
         'PING',
-        'PASSWD'
+        'PASSWD',
     );
 
     return str_ireplace($replace, '', $str);
 }
 
-function mkdirs($dir, $mode = 0777, $recursive = true) {
-    if (is_null($dir) || $dir === "") {
+function mkdirs($dir, $mode = 0777, $recursive = true)
+{
+    if (is_null($dir) || $dir === '') {
         return false;
     }
-    if (is_dir($dir) || $dir === "/") {
+    if (is_dir($dir) || $dir === '/') {
         return true;
     }
     if (mkdirs(dirname($dir), $mode, $recursive)) {
@@ -367,9 +374,9 @@ function mkdirs($dir, $mode = 0777, $recursive = true) {
     return false;
 }
 
-function base_url($uri = '', $params = [], $protocol = null) {
-    $base_url = slash_item('base_url');
-
+function base_url($uri = '', $params = [], $protocol = null)
+{
+    $base_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . '/';
     if (isset($protocol)) {
         // For protocol-relative links
         if ($protocol === '') {
@@ -388,8 +395,8 @@ function base_url($uri = '', $params = [], $protocol = null) {
     return $url;
 }
 
-
-function uri_string($uri) {
+function uri_string($uri)
+{
     if (getConfig('enable_query_strings') === false) {
         if (is_array($uri)) {
             $uri = implode('/', $uri);
@@ -403,11 +410,12 @@ function uri_string($uri) {
     return $uri;
 }
 
-function getConfig($key) {
+function getConfig($key)
+{
     $config = \Yaf\Application::app()->getConfig();
     if (strpos($key, '/') > -1) {
         $key_arr = explode('/', $key);
-        $result  = $config;
+        $result = $config;
         foreach ($key_arr as $v) {
             $result = $result[$v];
         }
@@ -419,22 +427,26 @@ function getConfig($key) {
 }
 
 /**
- * 抛出异常处理
- * @param string  $msg 异常消息
- * @param integer $code 异常代码 默认为0
+ * 抛出异常处理.
+ *
+ * @param string $msg 异常消息
+ * @param int $code 异常代码 默认为0
+ *
  * @throws Yaf\Exception
- * @return void
  */
-function E($msg, $code = 0) {
+function E($msg, $code = 0)
+{
     throw new \Yaf\Exception($msg, $code);
 }
 
-function debug($arr) {
+function debug($arr)
+{
     echo '<pre>' . print_r($arr, true) . '</pre>';
     exit;
 }
 
-function memory() {
+function memory()
+{
     $cache = Yaf\Registry::get('Redis');
     if (!$cache) {
         Yaf\Loader::import(' / Redis .class.php');
@@ -448,26 +460,32 @@ function memory() {
 /**
  * 字符串命名风格转换
  * type 0 将Java风格转换为C的风格 1 将C风格转换为Java的风格
- * @param string  $name 字符串
- * @param integer $type 转换类型
+ *
+ * @param string $name 字符串
+ * @param int $type 转换类型
+ *
  * @return string
  */
-function parseName($name, $type = 0) {
+function parseName($name, $type = 0)
+{
     if ($type) {
         return ucfirst(preg_replace_callback('/_([a-zA-Z])/', function ($match) {
             return strtoupper($match[1]);
         }, $name));
     } else {
-        return strtolower(trim(preg_replace("/[A-Z]/", "_\\0", $name), "_"));
+        return strtolower(trim(preg_replace('/[A-Z]/', '_\\0', $name), '_'));
     }
 }
 
 /**
- * 区分大小写的文件存在判断
+ * 区分大小写的文件存在判断.
+ *
  * @param string $filename 文件地址
- * @return boolean
+ *
+ * @return bool
  */
-function fileExistsCase($filename) {
+function fileExistsCase($filename)
+{
     if (is_file($filename)) {
         if (IS_WIN && APP_DEBUG) {
             if (basename(realpath($filename)) != basename($filename)) {
@@ -482,10 +500,12 @@ function fileExistsCase($filename) {
 }
 
 /**
- * 判断是否SSL协议
- * @return boolean
+ * 判断是否SSL协议.
+ *
+ * @return bool
  */
-function isSsl() {
+function isSsl()
+{
     if (isset($_SERVER['HTTPS']) && ('1' == $_SERVER['HTTPS'] || 'on' == strtolower($_SERVER['HTTPS']))) {
         return true;
     } elseif (isset($_SERVER['SERVER_PORT']) && ('443' == $_SERVER['SERVER_PORT'])) {
@@ -497,15 +517,18 @@ function isSsl() {
 
 /**
  * XML编码
- * @param mixed  $data 数据
+ *
+ * @param mixed $data 数据
  * @param string $root 根节点名
  * @param string $item 数字索引的子节点名
  * @param string $attr 根节点属性
  * @param string $id 数字索引子节点key转换的属性名
  * @param string $encoding 数据编码
+ *
  * @return string
  */
-function xmlEncode($data, $root = 'think', $item = 'item', $attr = '', $id = 'id', $encoding = 'utf-8') {
+function xmlEncode($data, $root = 'think', $item = 'item', $attr = '', $id = 'id', $encoding = 'utf-8')
+{
     if (is_array($attr)) {
         $_attr = array();
         foreach ($attr as $key => $value) {
@@ -515,7 +538,7 @@ function xmlEncode($data, $root = 'think', $item = 'item', $attr = '', $id = 'id
     }
     $attr = trim($attr);
     $attr = empty($attr) ? '' : " {$attr}";
-    $xml  = "<?xml version=\"1.0\" encoding=\"{$encoding}\"?>";
+    $xml = "<?xml version=\"1.0\" encoding=\"{$encoding}\"?>";
     $xml .= "<{$root}{$attr}>";
     $xml .= dataToXml($data, $item, $id);
     $xml .= "</{$root}>";
@@ -525,12 +548,15 @@ function xmlEncode($data, $root = 'think', $item = 'item', $attr = '', $id = 'id
 
 /**
  * 数据XML编码
- * @param mixed  $data 数据
+ *
+ * @param mixed $data 数据
  * @param string $item 数字索引时的节点名称
  * @param string $id 数字索引key转换为的属性名
+ *
  * @return string
  */
-function dataToXml($data, $item = 'item', $id = 'id') {
+function dataToXml($data, $item = 'item', $id = 'id')
+{
     $xml = $attr = '';
     foreach ($data as $key => $val) {
         if (is_numeric($key)) {
@@ -546,49 +572,60 @@ function dataToXml($data, $item = 'item', $id = 'id') {
 }
 
 /**
- * session管理函数
+ * session管理函数.
+ *
  * @param string|array $name session名称 如果为数组则表示进行session设置
- * @param mixed        $value session值
+ * @param mixed $value session值
+ *
  * @return mixed
  */
-function getSession($key) {
+function getSession($key)
+{
     return \Yaf\Session::getInstance()->__get(getConfig('session/prefix') . $key);
 }
 
-function setSession($key, $val) {
+function setSession($key, $val)
+{
     return \Yaf\Session::getInstance()->__set(getConfig('session/prefix') . $key, $val);
 }
 
-function clearSession($key) {
+function clearSession($key)
+{
     return \Yaf\Session::getInstance()->__unset(getConfig('session/prefix') . $key);
 }
 
 // Clear cookie
-function clearCookie($key) {
+function clearCookie($key)
+{
     setcookie(getConfig('cookie/prefix') . $key, '');
 }
 
 /**
- * Set COOKIE
+ * Set COOKIE.
  */
-function saveCookie($key, $value, $expire = 3600, $path = '/', $domain = '', $httpOnly = false) {
+function saveCookie($key, $value, $expire = 3600, $path = '/', $domain = '', $httpOnly = false)
+{
     setcookie(getConfig('cookie/prefix') . $key, $value, NOW_TIME + $expire, $path, $domain, $httpOnly);
 }
 
 /**
- * 获取cookie
+ * 获取cookie.
  */
-function getCookie($key) {
+function getCookie($key)
+{
     return trim($_COOKIE[getConfig('cookie/prefix') . $key]);
 }
 
 /**
  * 获取客户端IP地址
- * @param integer $type 返回类型 0 返回IP地址 1 返回IPV4地址数字
- * @param boolean $adv 是否进行高级模式获取（有可能被伪装）
+ *
+ * @param int $type 返回类型 0 返回IP地址 1 返回IPV4地址数字
+ * @param bool $adv 是否进行高级模式获取（有可能被伪装）
+ *
  * @return mixed
  */
-function getClientIp($type = 0, $adv = false) {
+function getClientIp($type = 0, $adv = false)
+{
     $type = $type ? 1 : 0;
     static $ip = null;
     if ($ip !== null) {
@@ -611,18 +648,19 @@ function getClientIp($type = 0, $adv = false) {
         $ip = $_SERVER['REMOTE_ADDR'];
     }
     // IP地址合法验证
-    $long = sprintf("%u", ip2long($ip));
-    $ip   = $long ? array($ip, $long) : array('0.0.0.0', 0);
+    $long = sprintf('%u', ip2long($ip));
+    $ip = $long ? array($ip, $long) : array('0.0.0.0', 0);
 
     return $ip[$type];
 }
 
 /**
  * 发送HTTP状态
- * @param integer $code 状态码
- * @return void
+ *
+ * @param int $code 状态码
  */
-function sendHttpStatus($code) {
+function sendHttpStatus($code)
+{
     static $_status = array(
         // Success 2xx
         200 => 'OK',
@@ -645,18 +683,21 @@ function sendHttpStatus($code) {
 }
 
 // 过滤表单中的表达式
-function filterExp(&$value) {
+function filterExp(&$value)
+{
     if (in_array(strtolower($value), array('exp', 'or'))) {
         $value .= ' ';
     }
 }
 
 // 不区分大小写的in_array实现
-function inArrayCase($value, $array) {
+function inArrayCase($value, $array)
+{
     return in_array(strtolower($value), array_map('strtolower', $array));
 }
 
-function getMenuTree($menus) {
+function getMenuTree($menus)
+{
     $html = '';
     if ($menus) {
         $html .= '<ul class="submenu">';
@@ -673,20 +714,22 @@ function getMenuTree($menus) {
     return $html;
 }
 
-function getFileUrl($file_path) {
+function getFileUrl($file_path)
+{
     return $file_path ? base_url() . getConfig('upload_url') . $file_path : '';
 }
 
-function writeLog($message, $level) {
+function writeLog($message, $level)
+{
     \Yaf\Loader::import('Log.class.php');
     \Yboard\Log::init();
     \Yboard\Log::record($message, $level);
     \Yboard\Log::save();
-
 }
 
-function isAdminUser($username) {
+function isAdminUser($username)
+{
     $admin_username = explode(',', ADMIN_USERNAME);
 
-    return ($admin_username && in_array($username, $admin_username));
+    return $admin_username && in_array($username, $admin_username);
 }

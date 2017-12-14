@@ -2,15 +2,18 @@
 
 namespace Yboard;
 
-
-class ItemService extends CommonService {
-
-    public function getList($params, $limit = 0, $page = 20, $field = []) {
-        $params     = $this->parseParams($params);
+class ItemService extends CommonService
+{
+    public function getList($params, $limit = 0, $page = 20, $field = [])
+    {
+        $params = $this->parseParams($params);
         $item_model = $this->loadModel('Item');
-        $data       = $item_model->getList($params, $limit, $page, $field);
+        $data = $item_model->getList($params, $limit, $page, $field);
         if ($field && !in_array('create_time', $field)) {
             return $data;
+        }
+        if (empty($data)) {
+            return [];
         }
         foreach ($data as $k => $v) {
             $data[$k]['create_time'] = date('Y-m-d H:i', $v['create_time']);
@@ -19,7 +22,8 @@ class ItemService extends CommonService {
         return $data;
     }
 
-    public function add($uid, $item_name, $item_description) {
+    public function add($uid, $item_name, $item_description)
+    {
         if (!$uid) {
             return $this->returnInfo(0, '用户id为空');
         }
@@ -33,18 +37,18 @@ class ItemService extends CommonService {
             return $this->returnInfo(0, '项目已经存在');
         }
 
-        $data = array(
-            'item_name'        => $item_name,
+        $data = [
+            'item_name' => $item_name,
             'item_description' => $item_description,
-            'uid'              => $uid,
-            'create_time'      => NOW_TIME
-        );
+            'uid' => $uid,
+            'create_time' => NOW_TIME,
+        ];
         if ($item_id = $item_model->save($data)) {
             $item_member_model = $this->loadModel('ItemMember');
             $item_member_model->save([
-                'item_id'     => $item_id,
-                'uid'         => $uid,
-                'create_time' => NOW_TIME
+                'item_id' => $item_id,
+                'uid' => $uid,
+                'create_time' => NOW_TIME,
             ]);
 
             return $this->returnInfo(1, '项目添加成功');
@@ -53,7 +57,8 @@ class ItemService extends CommonService {
         return $this->returnInfo();
     }
 
-    public function edit($item_id, $uid, $item_name, $item_description) {
+    public function edit($item_id, $uid, $item_name, $item_description)
+    {
         if (!$item_id) {
             return $this->returnInfo(0, '项目id为空');
         }
@@ -71,12 +76,12 @@ class ItemService extends CommonService {
             return $this->returnInfo(0, '项目已经存在');
         }
 
-        $data = array(
-            'item_name'        => $item_name,
+        $data = [
+            'item_name' => $item_name,
             'item_description' => $item_description,
-            'uid'              => $uid,
-            'create_time'      => NOW_TIME
-        );
+            'uid' => $uid,
+            'create_time' => NOW_TIME,
+        ];
         if ($item_model->updateById($item_id, $data)) {
             return $this->returnInfo(1, '项目编辑成功');
         }
@@ -84,8 +89,8 @@ class ItemService extends CommonService {
         return $this->returnInfo();
     }
 
-
-    public function del($item_ids) {
+    public function del($item_ids)
+    {
         if (!$item_ids) {
             return $this->returnInfo(0, '请选择项目id');
         }
@@ -101,22 +106,25 @@ class ItemService extends CommonService {
         return $this->returnInfo();
     }
 
-    public function count($params = null) {
-        $params     = $this->parseParams($params);
+    public function count($params = null)
+    {
+        $params = $this->parseParams($params);
         $item_model = $this->loadModel('Item');
 
         return $item_model->countByParams($params);
     }
 
-    public function getMyItem($uid) {
+    public function getMyItem($uid)
+    {
         $item_model = $this->loadModel('Item');
-        $item       = $item_model->getInfoByUid($uid);
-        $item_ids   = ($item) ? array_column($item, 'item_id') : null;
+        $item = $item_model->getInfoByUid($uid);
+        $item_ids = ($item) ? array_column($item, 'item_id') : null;
 
         return $item_ids;
     }
 
-    public function isMeItem($uid, $item_id) {
+    public function isMeItem($uid, $item_id)
+    {
         if (!$item_id) {
             return false;
         }
@@ -126,13 +134,15 @@ class ItemService extends CommonService {
         return $uid == $item_info['uid'];
     }
 
-    public function getItemById($item_id) {
+    public function getItemById($item_id)
+    {
         $item_model = $this->loadModel('Item');
 
         return $item_model->getById($item_id);
     }
 
-    public function getItemByName($item_name) {
+    public function getItemByName($item_name)
+    {
         $item_model = $this->loadModel('Item');
 
         return $item_model->getInfoByItemName($item_name);
