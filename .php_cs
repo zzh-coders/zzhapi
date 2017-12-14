@@ -19,5 +19,6 @@ return Symfony\CS\Config\Config::create()
     ])
     ->finder(
         Symfony\CS\Finder\DefaultFinder::create()
+            ->exclude('application')
             ->in(__DIR__)
     );
